@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 import streamlit_google_oauth as oauth
 from credentials import client_id, client_secret, redirect_uri
 
@@ -14,8 +13,4 @@ def ggAuth():
         user_id, user_email = login_info
         st.write(f"Welcome {user_email}")
 
-
 login_info = ggAuth()
-if login_info:
-    user_id, user_email = login_info
-    st.write(f"Welcome {user_email}")
