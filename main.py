@@ -1,9 +1,12 @@
 import streamlit as st
-import os
+import webbrowser
 import streamlit_google_oauth as oauth
 from credentials import client_id, client_secret, redirect_uri
-from streamlit_option_menu import option_menu
-import webbrowser
+from streamlit_navigation_bar import st_navbar
+
+
+url = 'https://buy.stripe.com/test_aEUaH5bhH7PP8nueUU'
+
 
 
 def ggAuth():
@@ -15,15 +18,15 @@ def ggAuth():
     )
     if login_info:
         user_id, user_email = login_info
-        selected = option_menu (
-        menu_title = None,
-        options = ['Chat bot 🤖','Payment 💸'],
-        default_index =0,
-        orientation = "horizontal"
-    )
         st.write(f"Welcome {user_email}")
-        if selected == "Payment":
-            url = "https://buy.stripe.com/test_28o8Ay2a73Wg1ygeUU"
-            webbrowser.open_new_tab(url)
-        
-login_info = ggAuth()
+    
+
+
+page = st_navbar(['Home','Subscription','Chat','Search','Solutions','Contact','Login'])
+
+if page == 'Subscription':
+    webbrowser(url)
+
+
+if page =="Login":
+    ggAuth()
