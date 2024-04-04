@@ -8,25 +8,34 @@ from streamlit_navigation_bar import st_navbar
 url = 'https://buy.stripe.com/test_aEUaH5bhH7PP8nueUU'
 
 
+swich_page = st.session_state.get("page_index",0)
 
 def ggAuth():
     login_info = oauth.login(
         client_id=client_id,
         client_secret=client_secret,
-        redirect_uri=redirect_uri,
-        logout_button_text="Logout",
+        redirect_uri=redirect_uri
     )
+    
     if login_info:
         user_id, user_email = login_info
-        st.write(f"Welcome {user_email}")
-    
+        st.text("Login success")
+        #st.text(f"Welcome {user_email}")
 
 
-page = st_navbar(['Home','Subscription','Chat','Search','Solutions','Contact','Login'])
+if swich_page ==0:
+    page = st_navbar(['Home','Subscription','Chat','Search','Solutions','Contact','Login'])
 
-if page == 'Subscription':
-    webbrowser(url)
+    if page == 'Subscription':
+        webbrowser.open_new_tab(url)
 
 
-if page =="Login":
-    ggAuth()
+    if page =="Login":
+        ggAuth()
+        st.session_state["page_index"] = 1
+
+if swich_page ==1:
+    page = st_navbar(['Home','Subscription','Chat','Search','Solutions','Contact'])
+    if page =='Home':
+        st.write(f"Welcome")
+        
