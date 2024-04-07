@@ -6,19 +6,17 @@ import webbrowser
 import pandas as pd
 
 
-stripe.api_key = "sk_test_51Ot9BvK8CtsB2sc74BA3mcV4A3fw4UpdufyAXjdtdqRZygDesPLHWdaaIwbc8qbaDnt7AHKpJgjNRUVag6jddeHg00L03ItGtG"
-#database
-conn = mysql.connector.connect(host = "localhost",
+def update_customers():
+    stripe.api_key = "sk_test_51Ot9BvK8CtsB2sc74BA3mcV4A3fw4UpdufyAXjdtdqRZygDesPLHWdaaIwbc8qbaDnt7AHKpJgjNRUVag6jddeHg00L03ItGtG"
+    #database
+    conn = mysql.connector.connect(host = "localhost",
                               port = "3306",
                               user = "root",
                               passwd = "123",
                               db = "doctor")
     
 
-cursor = conn.cursor()
-
-
-def update_customers():
+    cursor = conn.cursor()
     customers = cursor.execute('SELECT * FROM Customers')
 
     results = cursor.fetchall()
@@ -45,10 +43,20 @@ def update_customers():
         conn.commit()
     cursor.close()
 
-#update transaction
+    #update transaction
 
 def update_transaction():
 
+    stripe.api_key = "sk_test_51Ot9BvK8CtsB2sc74BA3mcV4A3fw4UpdufyAXjdtdqRZygDesPLHWdaaIwbc8qbaDnt7AHKpJgjNRUVag6jddeHg00L03ItGtG"
+    #database
+    conn = mysql.connector.connect(host = "localhost",
+                              port = "3306",
+                              user = "root",
+                              passwd = "123",
+                              db = "doctor")
+    
+
+    cursor = conn.cursor()
     transactions = stripe.BalanceTransaction.list()
     customers = stripe.Customer.list()
     transactions_id = [trans.id for trans in transactions]
@@ -70,3 +78,17 @@ def update_transaction():
         
         conn.commit()
     cursor.close()
+
+
+
+
+
+
+
+
+                                                
+
+
+    
+
+
