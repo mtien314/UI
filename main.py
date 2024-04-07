@@ -3,6 +3,8 @@ import webbrowser
 import streamlit_google_oauth as oauth
 from credentials import client_id, client_secret, redirect_uri
 from streamlit_navigation_bar import st_navbar
+import update
+from user_record import update_user_record
 
 
 url = 'https://buy.stripe.com/test_aEUaH5bhH7PP8nueUU'
@@ -18,9 +20,9 @@ def ggAuth():
     )
     
     if login_info:
-        user_id, user_email = login_info
-        st.text("Login success")
-        #st.text(f"Welcome {user_email}")
+        user_id,user_email = login_info
+        update_user_record(user_id,user_email)
+        st.text(f"Welcome {user_email}")
 
 
 if swich_page ==0:
@@ -28,6 +30,9 @@ if swich_page ==0:
 
     if page == 'Subscription':
         webbrowser.open_new_tab(url)
+        update.update_customers()
+        update.update_transaction()
+
 
 
     if page =="Login":
