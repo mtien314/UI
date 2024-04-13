@@ -1,10 +1,26 @@
 from threading import local
 from matplotlib.backend_bases import cursors
+from more_itertools import last
 import mysql.connector
 import pandas as pd
+from datetime import datetime
+import streamlit as st
+
+def connect(table):
+    conn = mysql.connector.connect(host = "localhost",
+                               port = "3306",
+                               user = "root",
+                               passwd = "123",
+                               db = "doctor"
+                                )
+    cursor = conn.cursor()
+    users = cursor.execute(f"SELECT * FROM {table}")
+    result = cursor.fetchall()
+    cursor.close()
+    return result
 
 
-def update_user_record(user_id,user_email):
+def update_user_record(user_id,user_email,last_visited):
     conn = mysql.connector.connect(host = "localhost",
                                port = "3306",
                                user = "root",
@@ -14,19 +30,75 @@ def update_user_record(user_id,user_email):
 
 
     cursor = conn.cursor()
-
-#create user table
-
-#cursor.execute("CREATE TABLE IF NOT EXISTS User (ID TEXT, Email TEXT)")
-#update
-
-    user_record = cursor.execute('SELECT * FROM User')
+    users = cursor.execute("SELECT * FROM User")
     result = cursor.fetchall()
+    df = pd.DataFrame(result,columns =['ID','Email','Register','Last_visited'])
 
-    df = pd.DataFrame(result,columns = ['ID','Email'])
-    if user_id not in df['ID']:
-        if user_email not in df['Email']:
-            cursor.execute('INSERT INTO User (ID,Email) VALUES (%s,%s);',
-                       (user_id,user_email))
-            conn.commit()
+    mail = [str(x) for x in df['Email']]
+    if user_email not in mail:
+        register = datetime.now()
+        cursor.execute('INSERT INTO User(ID, Email ,Register, Last_visited) VALUES (%s,%s,%s,%s);',
+                   (user_id,user_email,register,last_visited))
+        conn.commit()
+    else:
+        register = 0
+        cursor.execute('INSERT INTO User(ID, Email ,Register, Last_visited) VALUES (%s,%s,%s,%s);',
+                   (user_id,user_email,register,last_visited))
+        conn.commit()
     cursor.close()
+
+
+
+def update_account(user_id,user_email):
+    conn = mysql.connector.connect(host = "localhost",
+                               port = "3306",
+                               user = "root",
+                               passwd = "123",
+                               db = "doctor"
+                               )
+
+    cursor = conn.cursor()
+
+    users = cursor.execute('SELECT *FROM account')
+    result = cursor.fetchall()
+    df = pd.DataFrame(result,columns =['ID','Email','Password'])
+
+    mail = [str(x) for x in df['Email']]
+    if user_email not in mail:
+        passw = 0
+        cursor.execute('INSERT INTO account(ID, Email ,Password) VALUES (%s,%s,%s);',
+                   (user_id,user_email,passw))
+        conn.commit()
+    cursor.close()
+
+def update_account2(passw):
+    conn = mysql.connector.connect(host = "localhost",
+                               port = "3306",
+                               user = "root",
+                               passwd = "123",
+                               db = "doctor"
+                                )
+
+    cursor = conn.cursor()
+    sql = "UPDATE account SET Password=  %s WHERE Password = '0' LIMIT 1;"
+    value = (passw,)
+    cursor.execute(sql,value)
+    conn.commit()
+    cursor.close()
+
+
+def check_account(email):
+    result = connect(table = 'account')
+    df = pd.DataFrame(result,columns =['ID','Email','Password'])
+    
+    mail = [x for x in df['Email']]
+    if email in mail:
+       actual_pass = df.loc[df['Email']==email,'Password'].values[0]
+       return actual_pass
+
+def find_accountID(email):
+    result = connect(table = 'account')
+    df = pd.DataFrame(result,columns = ['ID','Email','Password'])
+    mail = [x for x in df['Email']]
+    account_ID = df.loc[df['Email']==email , 'ID' ].values[0]
+    return account_ID
