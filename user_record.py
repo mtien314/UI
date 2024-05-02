@@ -1,10 +1,8 @@
-from threading import local
-from matplotlib.backend_bases import cursors
-from more_itertools import last
 import mysql.connector
 import pandas as pd
 from datetime import datetime
-import streamlit as st
+
+
 
 def connect(table):
     conn = mysql.connector.connect(host = "localhost",
@@ -102,3 +100,22 @@ def find_accountID(email):
     mail = [x for x in df['Email']]
     account_ID = df.loc[df['Email']==email , 'ID' ].values[0]
     return account_ID
+
+
+def history_logs(email,login_status):
+    conn = mysql.connector.connect(host = "localhost",
+                               port = "3306",
+                               user = "root",
+                               passwd = "123",
+                               db = "doctor"
+                                )
+    cursor = conn.cursor()
+
+    login = datetime.now()
+    logout = "_"
+    cursor.execute("INSERT INTO history_logs(Email, login, logout, login_status)"
+                   "VALUES (%s, %s, %s, %s)",
+                   (email, login, logout, login_status))
+    conn.commit()
+    
+    cursor.close()
