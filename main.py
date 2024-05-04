@@ -1,6 +1,3 @@
-from os import access
-from more_itertools import last
-from numpy import place
 import streamlit as st
 import webbrowser
 import streamlit_google_oauth as oauth
@@ -16,7 +13,6 @@ import bcrypt
 
 
 url = 'https://buy.stripe.com/test_aEUaH5bhH7PP8nueUU'
-
 
 
 def ggAuth():
@@ -68,23 +64,26 @@ if page =="Login":
     
     else:
         actual_pass = check_account(email)
-        actual = actual_pass.encode()
+       
+        if actual_pass !=0:
+            actual = actual_pass.encode()
 
-        if bcrypt.checkpw(password.encode(), actual):
-            st.success("Login success")
+            if bcrypt.checkpw(password.encode(), actual):
+                st.success("Login success")
     
-            login_status = "Logged In"
-            history_logs(email,login_status)
-            user_id = find_accountID(email)
-            update_user_record(user_id,email,last_visited=0)
-            placeholder = st.empty()
-            sleep(0.5)
-            st.switch_page("pages/page1.py")
+                login_status = "Logged In"
+                history_logs(email,login_status)
+                user_id = find_accountID(email)
+                update_user_record(user_id,email,last_visited=0)
+                placeholder = st.empty()
+                sleep(0.5)
+                st.switch_page("pages/page1.py")
 
-    
+            else:
+                st.warning("Password/Email incorrect")
+                login_status = "Failed"
+                history_logs(email,login_status)
         else:
             st.warning("Password/Email incorrect")
             login_status = "Failed"
             history_logs(email,login_status)
-        
-        
