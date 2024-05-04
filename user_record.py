@@ -93,6 +93,8 @@ def check_account(email):
     if email in mail:
        actual_pass = df.loc[df['Email']==email,'Password'].values[0]
        return actual_pass
+    else:
+        return 0
 
 def find_accountID(email):
     result = connect(table = 'account')
@@ -117,5 +119,4 @@ def history_logs(email,login_status):
                    "VALUES (%s, %s, %s, %s)",
                    (email, login, logout, login_status))
     conn.commit()
-    
     cursor.close()
