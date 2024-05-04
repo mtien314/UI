@@ -81,7 +81,7 @@ if page2 =="Logout":
     update_logout(last_visited)
     update_lastime(last_visited)
     st.session_state.clear()
-    st.switch_page("testUI.py")
+    st.switch_page("main.py")
 
 if page2 == 'Home':
 
